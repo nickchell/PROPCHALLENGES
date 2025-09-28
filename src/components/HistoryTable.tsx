@@ -54,7 +54,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = ({ history }) => {
                 Phase
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Results
+                Trade Amounts
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Risk Used
@@ -88,16 +88,33 @@ export const HistoryTable: React.FC<HistoryTableProps> = ({ history }) => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                   Phase {record.phase}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <span className="flex items-center gap-1 text-green-600">
-                      <TrendingUp className="w-3 h-3" />
-                      {record.wins}
-                    </span>
-                    <span className="flex items-center gap-1 text-red-600">
-                      <TrendingDown className="w-3 h-3" />
-                      {record.losses}
-                    </span>
+                <td className="px-6 py-4 text-sm text-gray-600">
+                  <div className="space-y-1">
+                    {record.trade_amounts && record.trade_amounts.length > 0 ? (
+                      record.trade_amounts.map((amount, index) => (
+                        <div key={index} className={`flex items-center gap-1 ${amount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {amount >= 0 ? (
+                            <TrendingUp className="w-3 h-3" />
+                          ) : (
+                            <TrendingDown className="w-3 h-3" />
+                          )}
+                          <span className="font-mono text-xs">
+                            {amount >= 0 ? '+' : ''}${amount.toFixed(2)}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="flex items-center gap-1 text-green-600">
+                          <TrendingUp className="w-3 h-3" />
+                          {record.wins}
+                        </span>
+                        <span className="flex items-center gap-1 text-red-600">
+                          <TrendingDown className="w-3 h-3" />
+                          {record.losses}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">

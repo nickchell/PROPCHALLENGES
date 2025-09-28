@@ -5,7 +5,7 @@ import { TrendingUp, AlertTriangle } from 'lucide-react';
 interface TradingFormProps {
   currentRisk: number;
   tradesPerDay: number;
-  onSubmitTrades: (wins: number, losses: number) => void;
+  onSubmitTrades: (tradeAmounts: number[]) => void;
   disabled: boolean;
 }
 
@@ -15,22 +15,24 @@ export const TradingForm: React.FC<TradingFormProps> = ({
   onSubmitTrades,
   disabled
 }) => {
-  const [wins, setWins] = useState(0);
-  const [losses, setLosses] = useState(0);
+  const [tradeAmounts, setTradeAmounts] = useState<number[]>(new Array(tradesPerDay).fill(0));
 
-  const totalTrades = wins + losses;
-  const isValidTotal = totalTrades === tradesPerDay;
+  const handleTradeAmountChange = (index: number, value: string) => {
+    const newAmounts = [...tradeAmounts];
+    newAmounts[index] = parseFloat(value) || 0;
+    setTradeAmounts(newAmounts);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isValidTotal && !disabled) {
-      onSubmitTrades(wins, losses);
-      setWins(0);
-      setLosses(0);
+    if (!disabled) {
+      onSubmitTrades(tradeAmounts);
+      setTradeAmounts(new Array(tradesPerDay).fill(0));
     }
   };
 
-  const potentialPL = wins * (currentRisk * 3) - losses * currentRisk;
+  const totalPL = tradeAmounts.reduce((sum, amount) => sum + amount, 0);
+  const allTradesEntered = tradeAmounts.every(amount => amount !== 0);
 
   return (
     <motion.div
@@ -44,70 +46,62 @@ export const TradingForm: React.FC<TradingFormProps> = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Wins Today
-            </label>
-            <input
-              type="number"
-              min="0"
-              max={tradesPerDay}
-              value={wins}
-              onChange={(e) => setWins(Number(e.target.value))}
-              disabled={disabled}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
-            />
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-medium text-gray-900">Enter Trade Results</h3>
+            <div className="text-sm text-gray-500">
+              Current Risk: ${currentRisk.toFixed(2)}
+            </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Losses Today
-            </label>
-            <input
-              type="number"
-              min="0"
-              max={tradesPerDay}
-              value={losses}
-              onChange={(e) => setLosses(Number(e.target.value))}
-              disabled={disabled}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Current Risk ($)
-            </label>
-            <input
-              type="text"
-              value={`$${currentRisk.toFixed(2)}`}
-              disabled
-              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600"
-            />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {tradeAmounts.map((amount, index) => (
+              <div key={index}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Trade {index + 1} P/L ($)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
+                    $
+                  </span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={amount === 0 ? '' : amount}
+                    onChange={(e) => handleTradeAmountChange(index, e.target.value)}
+                    disabled={disabled}
+                    placeholder="0.00"
+                    className="w-full pl-7 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  {amount > 0 ? 'Profit' : amount < 0 ? 'Loss' : 'Enter amount'}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600">
-              Total Trades: {totalTrades} / {tradesPerDay}
+              Trades Entered: {tradeAmounts.filter(amount => amount !== 0).length} / {tradesPerDay}
             </span>
-            {!isValidTotal && (
+            {!allTradesEntered && (
               <AlertTriangle className="w-4 h-4 text-amber-500" />
             )}
           </div>
           <div className="text-right">
-            <span className="text-sm text-gray-600">Potential P/L: </span>
-            <span className={`font-semibold ${potentialPL >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {potentialPL >= 0 ? '+' : ''}${potentialPL.toFixed(2)}
+            <span className="text-sm text-gray-600">Total P/L: </span>
+            <span className={`font-semibold ${totalPL >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {totalPL >= 0 ? '+' : ''}${totalPL.toFixed(2)}
             </span>
           </div>
         </div>
 
         <button
           type="submit"
-          disabled={!isValidTotal || disabled}
+          disabled={!allTradesEntered || disabled}
           className="w-full bg-blue-600 text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {disabled ? 'Challenge Complete' : 'Submit Daily Results'}

@@ -13,6 +13,7 @@ export interface TradingHistoryRecord {
   day_number: number;
   wins: number;
   losses: number;
+  trade_amounts: number[];
   risk_used: number;
   daily_pl: number;
   balance: number;
