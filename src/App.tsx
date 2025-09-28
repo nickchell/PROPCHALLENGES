@@ -289,32 +289,32 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Calculator className="w-8 h-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Dynamic Risk Calculator</h1>
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <Calculator className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Dynamic Risk Calculator</h1>
           </div>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto px-4">
             Track your $6,000 prop firm challenge with Phase 1 (8%) and Phase 2 (5%) targets, automatic risk adjustments, and violation detection.
           </p>
-          <div className="flex items-center justify-center gap-4 mt-4">
-            <span className="text-sm text-gray-500">Week #{weekNumber} - Day #{dayNumber} - Phase {currentPhase}</span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-2 sm:gap-4 mt-3 sm:mt-4">
+            <span className="text-xs sm:text-sm text-gray-500">Week #{weekNumber} - Day #{dayNumber} - Phase {currentPhase}</span>
             <button
               onClick={resetChallenge}
-              className="text-sm text-red-600 hover:text-red-700 font-medium"
+              className="text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium"
             >
               Reset Challenge
             </button>
           </div>
         </motion.div>
 
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           <ConfigPanel 
             config={config} 
             currentPhase={currentPhase}

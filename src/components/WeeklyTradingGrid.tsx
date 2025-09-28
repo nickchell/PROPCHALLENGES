@@ -207,42 +207,44 @@ export const WeeklyTradingGrid: React.FC<WeeklyTradingGridProps> = ({
       animate={{ opacity: 1, y: 0 }}
       className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
     >
-      <div className="flex items-center gap-3 mb-6">
-        <Calendar className="w-5 h-5 text-blue-600" />
-        <h2 className="text-xl font-semibold text-gray-900">Week {currentWeek} Trading</h2>
-        <div className="ml-auto flex items-center gap-4">
-          <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+        <div className="flex items-center gap-3">
+          <Calendar className="w-5 h-5 text-blue-600" />
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Week {currentWeek} Trading</h2>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 sm:ml-auto">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => onWeekChange(currentWeek - 1)}
               disabled={currentWeek <= 1}
-              className="px-3 py-1 text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              ← Previous
+              ← Prev
             </button>
-            <span className="text-sm text-gray-500">
+            <span className="text-xs sm:text-sm text-gray-500">
               Week {currentWeek} of {maxWeek}
             </span>
             <button
               onClick={() => onWeekChange(currentWeek + 1)}
               disabled={currentWeek >= maxWeek}
-              className="px-3 py-1 text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next →
             </button>
             <button
               onClick={onNextWeek}
-              className="px-3 py-1 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              + New Week
+              + New
             </button>
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-xs sm:text-sm text-gray-500">
             Risk: ${currentRisk.toFixed(2)} per trade
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
         {DAYS_OF_WEEK.map((dayOfWeek) => {
           const day = dayData[dayOfWeek];
           const allTradesEntered = day.tradeAmounts.every(amount => amount !== 0);
@@ -253,10 +255,10 @@ export const WeeklyTradingGrid: React.FC<WeeklyTradingGridProps> = ({
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: DAYS_OF_WEEK.indexOf(dayOfWeek) * 0.1 }}
-              className={`rounded-lg border-2 p-4 transition-all duration-200 ${getDayColor(day)}`}
+              className={`rounded-lg border-2 p-3 sm:p-4 transition-all duration-200 ${getDayColor(day)}`}
             >
               <div className="text-center mb-4">
-                <h3 className={`font-semibold text-lg ${getDayTextColor(day)}`}>
+                <h3 className={`font-semibold text-base sm:text-lg ${getDayTextColor(day)}`}>
                   {dayOfWeek}
                 </h3>
                 {day.isSubmitted && (
@@ -276,7 +278,7 @@ export const WeeklyTradingGrid: React.FC<WeeklyTradingGridProps> = ({
               </div>
 
               {!day.isSubmitted && (
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {day.tradeAmounts.map((amount, index) => (
                     <div key={index} className="space-y-2">
                       <label className="block text-xs font-medium text-gray-600 mb-1">
@@ -293,7 +295,7 @@ export const WeeklyTradingGrid: React.FC<WeeklyTradingGridProps> = ({
                           onChange={(e) => handleTradeAmountChange(dayOfWeek, index, e.target.value)}
                           disabled={disabled}
                           placeholder="0.00"
-                          className="w-full pl-6 pr-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                          className="w-full pl-6 pr-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
                         />
                       </div>
                       
@@ -309,10 +311,11 @@ export const WeeklyTradingGrid: React.FC<WeeklyTradingGridProps> = ({
                         />
                         <label
                           htmlFor={`screenshot-${dayOfWeek}-${index}`}
-                          className="flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded cursor-pointer hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="flex items-center gap-1 px-2 py-1.5 text-xs font-medium text-gray-600 bg-gray-100 rounded cursor-pointer hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           <Camera className="w-3 h-3" />
-                          {day.tradeScreenshots[index] ? 'Change' : 'Add'}
+                          <span className="hidden sm:inline">{day.tradeScreenshots[index] ? 'Change' : 'Add'}</span>
+                          <span className="sm:hidden">{day.tradeScreenshots[index] ? '✏️' : '📷'}</span>
                         </label>
                         {day.tradeScreenshots[index] && (
                           <button
@@ -335,7 +338,7 @@ export const WeeklyTradingGrid: React.FC<WeeklyTradingGridProps> = ({
                   <button
                     onClick={() => handleSubmitDay(dayOfWeek)}
                     disabled={disabled}
-                    className="w-full mt-4 px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-full mt-3 sm:mt-4 px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Submit Day
                   </button>
@@ -350,10 +353,11 @@ export const WeeklyTradingGrid: React.FC<WeeklyTradingGridProps> = ({
                   {day.tradeScreenshotUrls.some(url => url !== null) && (
                     <button
                       onClick={() => handleViewScreenshots(dayOfWeek)}
-                      className="flex items-center gap-1 px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors mb-3 mx-auto"
+                      className="flex items-center gap-1 px-2 sm:px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors mb-2 sm:mb-3 mx-auto"
                     >
                       <Eye className="w-3 h-3" />
-                      View Screenshots
+                      <span className="hidden sm:inline">View Screenshots</span>
+                      <span className="sm:hidden">View</span>
                     </button>
                   )}
                   
@@ -368,7 +372,7 @@ export const WeeklyTradingGrid: React.FC<WeeklyTradingGridProps> = ({
                             <img 
                               src={day.tradeScreenshotUrls[index]!} 
                               alt={`Trade ${index + 1} screenshot`} 
-                              className="w-full h-16 object-cover rounded border cursor-pointer hover:opacity-80 transition-opacity"
+                              className="w-full h-12 sm:h-16 object-cover rounded border cursor-pointer hover:opacity-80 transition-opacity"
                               onClick={() => handleViewScreenshots(dayOfWeek)}
                             />
                           </div>
